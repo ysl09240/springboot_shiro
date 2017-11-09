@@ -11,9 +11,9 @@
 .classpath
 .project
 .mymetadata
-/.gradle/
-/.idea/
-/captures/
+.gradle/
+.idea/
+captures/
 .DS_Store
 
 # setting folders #
