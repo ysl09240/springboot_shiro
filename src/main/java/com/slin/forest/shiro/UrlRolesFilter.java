@@ -1,45 +1,41 @@
 package com.slin.forest.shiro;
 
-
+import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.web.filter.authz.RolesAuthorizationFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import com.alibaba.fastjson.JSON;
-import com.github.pagehelper.util.StringUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.web.filter.authz.PermissionsAuthorizationFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * 权限过滤器,当ajax请求时，返回批定参数
+ * 角色过滤器
+ *
  * @author yangsonglin
- * @create 2018-11-16 12:04
+ * @create 2018-11-19 10:15
  **/
-public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
-
+public class UrlRolesFilter extends RolesAuthorizationFilter {
     private static final Logger logger = LoggerFactory
-            .getLogger(UrlPermissionsFilter.class);
-
+            .getLogger(UrlRolesFilter.class);
 
     @Override
     public boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws IOException {
         Subject subject = getSubject(request, response);
-        String[] permissionArray = (String[]) mappedValue;
+        String[] rolesArray = (String[]) mappedValue;
 
-        if (permissionArray == null || permissionArray.length == 0) { //没有角色限制，有权限访问
+        if (rolesArray == null || rolesArray.length == 0) { //没有角色限制，有权限访问
             return true;
         }
-        for (int i = 0; i < permissionArray.length; i++) {
-            if (subject.isPermitted(permissionArray[i])) { //若当前用户是rolesArray中的任何一个，则有权限访问
+        for (int i = 0; i < rolesArray.length; i++) {
+            if (subject.hasRole(rolesArray[i])) { //若当前用户是rolesArray中的任何一个，则有权限访问
                 return true;
             }
         }
@@ -76,6 +72,4 @@ public class UrlPermissionsFilter extends PermissionsAuthorizationFilter {
     }
 
 
-
 }
-

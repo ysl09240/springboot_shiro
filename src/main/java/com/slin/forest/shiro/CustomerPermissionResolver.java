@@ -7,10 +7,11 @@ import org.springframework.stereotype.Component;
 
 /**
  * 自定义权限解析器
+ *
+ * 一般不需要定义此解析器，使用框架默认的就行，这里只是留个样例，如何自定义解析器而已
  * @author yangsonglin
  *  * @create 2018-11-17 13:04
  */
-@Component
 public class CustomerPermissionResolver implements PermissionResolver {
     @Override
     public Permission resolvePermission(String permissionString) {
