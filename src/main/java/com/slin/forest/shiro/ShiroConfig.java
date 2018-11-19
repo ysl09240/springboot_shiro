@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.apache.shiro.mgt.SecurityManager;
 import org.springframework.core.annotation.Order;
 
+import javax.servlet.Filter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -23,16 +24,17 @@ public class ShiroConfig {
     CustomRealm customRealm;
 
     @Bean
-    @Order(98)
     public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        Map<String,Filter> filterMap = shiroFilterFactoryBean.getFilters();
+        filterMap.put("perms",new UrlPermissionsFilter());
         // 必须设置 SecurityManager
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         // setLoginUrl 如果不设置值，默认会自动寻找Web工程根目录下的"/login.jsp"页面 或 "/login" 映射
         //登录
         shiroFilterFactoryBean.setLoginUrl("/login");
         // 设置无权限时跳转的 url;
-        shiroFilterFactoryBean.setUnauthorizedUrl("/notRole");
+//        shiroFilterFactoryBean.setUnauthorizedUrl("/notRole");
 
 
         //错误页面，认证不通过跳转
@@ -43,7 +45,8 @@ public class ShiroConfig {
         //游客，开发权限
 //        filterChainDefinitionMap.put("/guest/**", "anon");
         //用户，需要角色权限 “user”
-        filterChainDefinitionMap.put("/user/**", "roles[ADMIN]");
+        filterChainDefinitionMap.put("/user/list", "perms[user:list]");
+        filterChainDefinitionMap.put("/user/add", "perms[user:add]");
         //管理员，需要角色权限 “admin”
 //        filterChainDefinitionMap.put("/admin/**", "roles[admin]");
         //开放登陆接口
