@@ -1,5 +1,6 @@
 package com.slin.forest.shiro;
 
+import org.apache.shiro.authz.permission.PermissionResolver;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,7 @@ public class ShiroConfig {
         return securityManager;
     }
 
+    PermissionResolver
 
     /**
      * 自定义身份认证 realm;
