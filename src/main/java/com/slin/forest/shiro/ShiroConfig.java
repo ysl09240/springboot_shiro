@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.apache.shiro.mgt.SecurityManager;
 import org.springframework.core.annotation.Order;
 
+import javax.servlet.Filter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -20,20 +21,23 @@ import java.util.Map;
 @Configuration
 public class ShiroConfig {
 
-    @Autowired
-    CustomRealm customRealm;
 
     @Bean
-    @Order(98)
     public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        //如果要重写过滤器，需要先获取过滤器链，然后通过新的过滤器覆盖
+        Map<String,Filter> filterMap = shiroFilterFactoryBean.getFilters();
+        //这里就是通过key:perms 覆盖掉权限的过滤器
+//        filterMap.put("perms",new UrlPermissionsFilter());
+        //这里就是通过key:perms 覆盖掉角色的过滤器,一般角色和权限，只需要覆盖掉一个，就可以实现权限拦截功能了，不需要覆盖两个
+        filterMap.put("roles",new UrlRolesFilter());
         // 必须设置 SecurityManager
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         // setLoginUrl 如果不设置值，默认会自动寻找Web工程根目录下的"/login.jsp"页面 或 "/login" 映射
         //登录
         shiroFilterFactoryBean.setLoginUrl("/login");
         // 设置无权限时跳转的 url;
-        shiroFilterFactoryBean.setUnauthorizedUrl("/notRole");
+//        shiroFilterFactoryBean.setUnauthorizedUrl("/notRole");
 
 
         //错误页面，认证不通过跳转
@@ -43,8 +47,10 @@ public class ShiroConfig {
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         //游客，开发权限
 //        filterChainDefinitionMap.put("/guest/**", "anon");
-        //用户，需要角色权限 “user”
-        filterChainDefinitionMap.put("/user/**", "roles[ADMIN]");
+        filterChainDefinitionMap.put("/user/list", "roles[ADMIN,USER]");
+        //用户，需要权限
+//        filterChainDefinitionMap.put("/user/list", "perms[user:list]");
+//        filterChainDefinitionMap.put("/user/add", "perms[user:add]");
         //管理员，需要角色权限 “admin”
 //        filterChainDefinitionMap.put("/admin/**", "roles[admin]");
         //开放登陆接口
@@ -68,7 +74,7 @@ public class ShiroConfig {
     public SecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         // 设置realm.
-        securityManager.setRealm(customRealm);
+        securityManager.setRealm(customRealm());
         return securityManager;
     }
 
@@ -82,6 +88,9 @@ public class ShiroConfig {
      */
     @Bean
     public CustomRealm customRealm() {
+//        CustomRealm customRealm = new CustomRealm(); //这里如果要自定义解析器可以这样写
+//        customRealm.setRolePermissionResolver(new CustomerPermissionResolver());
+//        customRealm.setPermissionResolver();
         return new CustomRealm();
     }
 

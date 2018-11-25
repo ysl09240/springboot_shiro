@@ -7,6 +7,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.authz.permission.PermissionResolver;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,6 @@ public class CustomRealm extends AuthorizingRealm {
 
     @Autowired
     private IUserService userService;
-
-
 
     /**
      * 获取身份验证信息
@@ -65,11 +64,16 @@ public class CustomRealm extends AuthorizingRealm {
         //获得该用户角色
         List<RoleBean> roles = userService.getRoleByUserId(userBean.getId());
 
-        Set<String> set = new HashSet<>();
+        Set<String> setRole = new HashSet<>();
         for (RoleBean role:roles) {
-            set.add(role.getRoleEnName());
+            setRole.add(role.getRoleEnName());
         }
-        info.setRoles(set);
+        info.setRoles(setRole);
+        Set<String> setPermiss = new HashSet<>();
+        setPermiss.add("user:add");
+//        setPermiss.add("user:list");
+        info.setStringPermissions(setPermiss);
         return info;
     }
+
 }

@@ -10,7 +10,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
  * @author yangsonglin
  * @create 2018-11-12 17:54
  **/
-@ServletComponentScan  //配合@webFileter使用
+//@ServletComponentScan  //配合@webFileter使用
 @SpringBootApplication
 public class Application {
 
