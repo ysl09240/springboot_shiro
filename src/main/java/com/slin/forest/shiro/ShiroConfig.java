@@ -78,8 +78,6 @@ public class ShiroConfig {
         return securityManager;
     }
 
-    PermissionResolver
-
     /**
      * 自定义身份认证 realm;
      * <p>
