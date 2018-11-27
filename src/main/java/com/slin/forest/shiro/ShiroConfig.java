@@ -1,14 +1,12 @@
 package com.slin.forest.shiro;
 
-import org.apache.shiro.authz.permission.PermissionResolver;
+import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.apache.shiro.mgt.SecurityManager;
-import org.springframework.core.annotation.Order;
 
 import javax.servlet.Filter;
 import java.util.LinkedHashMap;
@@ -78,6 +76,7 @@ public class ShiroConfig {
         return securityManager;
     }
 
+
     /**
      * 自定义身份认证 realm;
      * <p>
@@ -92,5 +91,9 @@ public class ShiroConfig {
         return new CustomRealm();
     }
 
+    @Bean
+    public ShiroDialect shiroDialect() {
+        return new ShiroDialect();
+    }
 
 }
