@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpSession;
 
 /**
- * @author yangsonglin@e6yun.com
+ * @author yangsonglin
  *         Created on 2017/11/9
  */
 @Controller
